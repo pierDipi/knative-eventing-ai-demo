@@ -140,3 +140,23 @@ item {
 EOF
 ```
 
+Create TensorFlow records:
+```shell
+pip install pandas
+
+# create a directory for the upcoming script
+mkdir -p training/TensorFlow/scripts/preprocessing
+cd training/TensorFlow/scripts/preprocessing
+
+# download the script to generate TFRecords
+curl -L https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/_downloads/da4babe668a8afb093cc7776d7e630f3/generate_tfrecord.py -o generate_tfrecord.py
+
+# Create train data:
+python generate_tfrecord.py -x ../../workspace/training_01/images/train -l ../../workspace/training_01/annotations/label_map.pbtxt -o ../../workspace/training_01/annotations/train.record
+
+# Create test data:
+python generate_tfrecord.py -x ../../workspace/training_01/images/test  -l ../../workspace/training_01/annotations/label_map.pbtxt -o ../../workspace/training_01/annotations/test.record
+
+cd ../../../..
+```
+
