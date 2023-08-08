@@ -7,7 +7,6 @@ tf.get_logger().setLevel('ERROR')  # Suppress TensorFlow logging (2)
 import time
 import numpy as np
 from PIL import Image
-import pathlib
 import matplotlib
 import matplotlib.pyplot as plt
 from object_detection.utils import label_map_util
@@ -18,22 +17,23 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
-IMAGE_PATHS = [
-    # TODO: make it relative
-    "/Users/aliok/go/src/github.com/aliok/knative-eventing-ai-demo/training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.49.jpeg",
+SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+TEST_IMAGES = [
+    "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.49.jpeg",
 ]
 
-# TODO: make it relative
-PATH_TO_SAVED_MODEL = "/Users/aliok/go/src/github.com/aliok/knative-eventing-ai-demo/training/TensorFlow/workspace/training_01/exported-models/my_model/saved_model"
+PATH_TO_SAVED_MODEL = "../../training/TensorFlow/workspace/training_01/exported-models/my_model/saved_model"
 
-# TODO: make it relative
-PATH_TO_LABELS = "/Users/aliok/go/src/github.com/aliok/knative-eventing-ai-demo/training/TensorFlow/workspace/training_01/annotations/label_map.pbtxt"
+PATH_TO_LABELS = "../../training/TensorFlow/workspace/training_01/annotations/label_map.pbtxt"
+
+OUTPUT_DIR = "./output"
 
 print('Loading model...', end='')
 start_time = time.time()
 
 # Load saved model and build the detection function
-detect_fn = tf.saved_model.load(PATH_TO_SAVED_MODEL)
+detect_fn = tf.saved_model.load(os.path.join(SCRIPT_PATH, PATH_TO_SAVED_MODEL))
 
 end_time = time.time()
 elapsed_time = end_time - start_time
@@ -47,7 +47,7 @@ print('Done! Took {} seconds'.format(elapsed_time))
 # functions, but anything that returns a dictionary mapping integers to appropriate string labels
 # would be fine.
 
-category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS,
+category_index = label_map_util.create_category_index_from_labelmap(os.path.join(SCRIPT_PATH, PATH_TO_LABELS),
                                                                     use_display_name=True)
 
 # %%
@@ -81,7 +81,9 @@ def load_image_into_numpy_array(path):
     """
     return np.array(Image.open(path))
 
-for image_path in IMAGE_PATHS:
+for image_path in TEST_IMAGES:
+    image_path = os.path.join(SCRIPT_PATH, image_path)
+    image_path = os.path.abspath(image_path)
 
     print('Running inference for {}... '.format(image_path))
 
@@ -134,7 +136,7 @@ for image_path in IMAGE_PATHS:
     matplotlib.use("Qt5Agg")
     plt.figure()
     plt.imshow(image_np_with_detections)
-    target_file_name = "/Users/aliok/go/src/github.com/aliok/knative-eventing-ai-demo/inference_test/plot/" + os.path.basename(image_path) + ".png"
+    target_file_name = os.path.join(SCRIPT_PATH, OUTPUT_DIR, os.path.basename(image_path) + ".png")
     plt.savefig(target_file_name)
     print('Done')
 
