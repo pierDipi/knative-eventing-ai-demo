@@ -111,5 +111,10 @@ touch workspace/training_01/images/train/.gitkeep
 touch workspace/training_01/models/.gitkeep
 touch workspace/training_01/pre-trained-models/.gitkeep
 
-cd ../../../..
+cd ../..
+```
+
+Install labelImg for annotating images:
+```shell
+pip install labelImg
 ```
