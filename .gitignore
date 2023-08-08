@@ -1,1 +1,5 @@
 training/.venv
+
+training/TensorFlow/workspace/training_01/pre-trained-models
+training/TensorFlow/workspace/training_01/models
+!training/TensorFlow/workspace/training_01/models/pipeline.config

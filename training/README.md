@@ -179,3 +179,31 @@ cp training/TensorFlow/workspace/training_01/pre-trained-models/ssd_resnet50_v1_
 ```
 
 Manually change the model config in `training/TensorFlow/workspace/training_01/models/my_ssd_resnet50_v1_fpn/pipeline.config`
+
+Train the model:
+```shell
+# copy the script to run the training
+cp training/TensorFlow/models/research/object_detection/model_main_tf2.py training/TensorFlow/workspace/training_01
+
+# start the training
+cd training/TensorFlow/workspace/training_01
+# this takes too much time without a GPU... I gave up on my MacBook Pro after 3.5 hours.
+# On my Mac, per-time step was 17 seconds.
+#
+python model_main_tf2.py --model_dir=models/my_ssd_resnet50_v1_fpn --pipeline_config_path=models/my_ssd_resnet50_v1_fpn/pipeline.config
+
+cd ../../../..
+```
+
+Once trained, upload it to Google Cloud Storage:
+```shell
+# make sure you do https://cloud.google.com/storage/docs/gsutil_install#authenticate first
+# e.g. gsutil config
+# I the following for authentication using a service account:
+# used gsutil.config -e
+# I went to the bucket and gave admin permissions to the service account on the bucket
+
+# bucket is there already
+gsutil cp -r training/TensorFlow/workspace/training_01/models/ gs://knative-ai-demo
+
+```
