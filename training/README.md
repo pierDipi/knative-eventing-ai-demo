@@ -34,4 +34,18 @@ mv models-4e797d7010a437b189ea0e52cfb398ebb74ac75f models
 cd ../..
 ```
 
+Compile Protobufs:
+```shell
+# install Protocol Buffers and have it in your PATH
+# I have it already, figure it out yourself
+#
 
+# go into `<root>/training/TensorFlow/models/research/`
+cd training/TensorFlow/models/research/
+
+# compile Protobufs
+protoc object_detection/protos/*.proto --python_out=.
+
+# back to `<root>`
+cd ../../../..
+```
