@@ -129,3 +129,14 @@ labelImg training/TensorFlow/workspace/training_01/images
 ```
 
 Then manually partition images in `training/TensorFlow/workspace/training_01/images` into `test` and `train` folders.
+
+Create the label map:
+```shell
+cat <<EOF >>training/TensorFlow/workspace/training_01/annotations/label_map.pbtxt
+item {
+    id: 1
+    name: 'knative'
+}
+EOF
+```
+
