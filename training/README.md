@@ -18,3 +18,20 @@ python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1
 # go back to `<root>`
 cd ..
 ```
+
+Download TensorFlow Model Garden:
+```shell
+cd training
+
+# download TensorFlow Model Garden at commit 4e797d7010a437b189ea0e52cfb398ebb74ac75f
+mkdir TensorFlow
+cd TensorFlow
+curl -L https://github.com/tensorflow/models/archive/4e797d7010a437b189ea0e52cfb398ebb74ac75f.zip -o models.zip
+unzip models.zip
+mv models-4e797d7010a437b189ea0e52cfb398ebb74ac75f models
+
+# back to `<root>`
+cd ../..
+```
+
+
