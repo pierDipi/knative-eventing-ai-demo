@@ -118,3 +118,12 @@ Install labelImg for annotating images:
 ```shell
 pip install labelImg
 ```
+
+Annotate images:
+```shell
+labelImg training/TensorFlow/workspace/training_01/images
+# In the tool:
+# - Change save location to training/TensorFlow/workspace/training_01/images
+# - Use class `knative`
+# - Press `w` to draw a box, `a`/`d` to go to the previous/next image
+```
