@@ -170,3 +170,10 @@ tar xvzf model.tar.gz
 
 cd ../../../../..
 ```
+
+Copy model config:
+```shell
+mkdir training/TensorFlow/workspace/training_01/models/my_ssd_resnet50_v1_fpn
+
+cp training/TensorFlow/workspace/training_01/pre-trained-models/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8/pipeline.config training/TensorFlow/workspace/training_01/models/my_ssd_resnet50_v1_fpn/pipeline.config
+```
