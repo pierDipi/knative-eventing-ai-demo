@@ -49,3 +49,10 @@ protoc object_detection/protos/*.proto --python_out=.
 # back to `<root>`
 cd ../../../..
 ```
+
+Install COCO API, but custom:
+```shell
+# install pycocotools
+pip install cython==3.0.0
+pip install git+https://github.com/philferriere/cocoapi.git@2929bd2ef6b451054755dfd7ceb09278f935f7ad#subdirectory=PythonAPI
+```
