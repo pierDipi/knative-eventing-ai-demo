@@ -1,4 +1,5 @@
 training/.venv
+inference_test/.venv
 
 training/TensorFlow/workspace/training_01/pre-trained-models
 training/TensorFlow/workspace/training_01/models
