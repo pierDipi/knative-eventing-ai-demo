@@ -56,3 +56,33 @@ Install COCO API, but custom:
 pip install cython==3.0.0
 pip install git+https://github.com/philferriere/cocoapi.git@2929bd2ef6b451054755dfd7ceb09278f935f7ad#subdirectory=PythonAPI
 ```
+
+Install TensorFlow Object Detection API:
+```shell
+cd training/TensorFlow/models/research/
+
+cp object_detection/packages/tf2/setup.py .
+python -m pip install .
+
+
+# It is ok to get errors/warnings like
+#            By 2023-Oct-30, you need to update your project and remove deprecated calls
+#            or your builds will no longer be supported.
+#    
+#            See https://setuptools.pypa.io/en/latest/userguide/declarative_config.html for details.
+
+
+cd ../../../..
+```
+
+Test if everything is installed properly:
+```shell
+cd training/TensorFlow/models/research/
+
+python object_detection/builders/model_builder_tf2_test.py
+
+# Good output:
+# Ran 24 tests in 31.777s
+
+cd ../../../..
+```
