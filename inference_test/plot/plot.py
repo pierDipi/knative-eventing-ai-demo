@@ -21,6 +21,9 @@ SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 TEST_IMAGES = [
     "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.49.jpeg",
+    "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.52.jpeg",
+    "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.53.jpeg",
+    "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.56.jpeg",
 ]
 
 PATH_TO_SAVED_MODEL = "../../training/TensorFlow/workspace/training_01/exported-models/my_model/saved_model"
