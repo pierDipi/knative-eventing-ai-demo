@@ -86,3 +86,30 @@ python object_detection/builders/model_builder_tf2_test.py
 
 cd ../../../..
 ```
+
+Create TensorFlow workspace:
+```shell
+cd training/TensorFlow
+
+mkdir workspace
+mkdir workspace/training_01
+mkdir workspace/training_01/annotations
+mkdir workspace/training_01/exported-models
+mkdir workspace/training_01/images
+mkdir workspace/training_01/images/test
+mkdir workspace/training_01/images/train
+mkdir workspace/training_01/models
+mkdir workspace/training_01/pre-trained-models
+
+touch workspace/.gitkeep
+touch workspace/training_01/.gitkeep
+touch workspace/training_01/annotations/.gitkeep
+touch workspace/training_01/exported-models/.gitkeep
+touch workspace/training_01/images/.gitkeep
+touch workspace/training_01/images/test/.gitkeep
+touch workspace/training_01/images/train/.gitkeep
+touch workspace/training_01/models/.gitkeep
+touch workspace/training_01/pre-trained-models/.gitkeep
+
+cd ../../../..
+```
