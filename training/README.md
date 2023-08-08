@@ -8,6 +8,8 @@ cd training
 # create a new virtual environment and activate it
 python3 -m venv .venv
 source .venv/bin/activate
+# Windows
+.venv\Scripts\activate.bat
 
 # install tensorflow
 pip install --ignore-installed --upgrade tensorflow==2.5.0
@@ -18,6 +20,8 @@ python -c "import tensorflow as tf;print(tf.reduce_sum(tf.random.normal([1000, 1
 # go back to `<root>`
 cd ..
 ```
+
+GPU Support on Windows: NOT DOCUMENTED HERE
 
 Download TensorFlow Model Garden:
 ```shell
@@ -188,9 +192,20 @@ cp training/TensorFlow/models/research/object_detection/model_main_tf2.py traini
 # start the training
 cd training/TensorFlow/workspace/training_01
 # this takes too much time without a GPU... I gave up on my MacBook Pro after 3.5 hours.
-# On my Mac, per-time step was 17 seconds.
-#
+# On my Mac, per-step time at step #100 was 21.8 seconds.
+# On a PC with GPU (Intel i7 10700F, Nvidia GeForce RTX 3070), per-step time at step #100 was 1.43 seconds. There's a ~15x speedup.
+# On the PC, the training took 1 hour and 15 minutes.
 python model_main_tf2.py --model_dir=models/my_ssd_resnet50_v1_fpn --pipeline_config_path=models/my_ssd_resnet50_v1_fpn/pipeline.config
+
+# sample output
+# I0808 20:34:46.699280  2904 model_lib_v2.py:705] Step 2500 per-step time 1.065s
+# INFO:tensorflow:{'Loss/classification_loss': 0.06834849,
+#  'Loss/localization_loss': 0.01116436,
+#  'Loss/regularization_loss': 0.21596497,
+#  'Loss/total_loss': 0.29547784,
+#  'learning_rate': 0.039953373}
+
+# KILL when you see a totalLoss < 1
 
 cd ../../../..
 ```
@@ -207,3 +222,13 @@ Once trained, upload it to Google Cloud Storage:
 gsutil cp -r training/TensorFlow/workspace/training_01/models/ gs://knative-ai-demo
 
 ```
+
+Troubleshooting:
+
+---
+
+`Could not locate zlibwapi.dll. Please make sure it is in your library path`
+
+Follow: https://stackoverflow.com/a/72458201
+
+---
