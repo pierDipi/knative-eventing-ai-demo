@@ -105,7 +105,13 @@ for image_path in TEST_IMAGES:
     # The model expects a batch of images, so add an axis with `tf.newaxis`.
     input_tensor = input_tensor[tf.newaxis, ...]
 
+    detection_start_time = time.time()
+
     detections = detect_fn(input_tensor)
+
+    detection_end_time = time.time()
+    detection_took = detection_end_time - detection_start_time
+    print('Done! Took {} seconds'.format(detection_took))
 
     # All outputs are batches tensors.
     # Convert to numpy arrays, and take index [0] to remove the batch dimension.
