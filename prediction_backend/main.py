@@ -4,6 +4,7 @@ import base64
 import io
 import numpy as np
 import requests
+import time
 
 app = Flask(__name__)
 
@@ -33,8 +34,17 @@ def hello_world():
     headers = {'Host': 'demo01.knative-ai-demo.example.com'}
     payload = {'instances': [image_np.tolist()]}
 
+    call_start_time = time.time()
+
     call = requests.post(URL, json=payload, headers=headers)
+
+    call_end_time = time.time()
+    print('Inference call took {} seconds'.format(call_end_time - call_start_time))
+
+    json_conversion_start_time = time.time()
     inference = call.json()
+    json_conversion_end_time = time.time()
+    print('JSON conversion took {} seconds'.format(json_conversion_end_time - json_conversion_start_time))
 
     # we only call with one image, so we only have one prediction
     predictions = inference['predictions'][0]

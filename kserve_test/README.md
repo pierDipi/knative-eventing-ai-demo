@@ -59,10 +59,15 @@ metadata:
   name: "demo01"
 spec:
   predictor:
-    model:
-      modelFormat:
-        name: tensorflow
+    tensorflow:
       storageUri: "gs://knative-ai-demo/kserve-models/knative_01"
+      resources:
+        limits:
+          cpu: "5"
+          memory: 12Gi
+        requests:
+          cpu: "5"
+          memory: 12Gi
 EOF
 
 # check status
@@ -77,9 +82,16 @@ SERVICE_HOSTNAME=$(kubectl get inferenceservice demo01 -n knative-ai-demo -o jso
 IMAGE_PATH="./tensorflow_serving_test/test_smaller.jpeg"
 # IMAGE_DATA will hold the image data as a list of lists of lists
 IMAGE_DATA=$(python -c "from PIL import Image;import os;import numpy as np;print(np.array(Image.open(os.path.join(os.getcwd(), '${IMAGE_PATH}'))).tolist())")
+
+INFERENCE_START=$(date +%s.%N)
+
 # call the inference, which will return a JSON with the predictions
 # there can be too many results, so, let's not print them right now
 INFERENCE_RESULT=$(curl -H "Host: ${SERVICE_HOSTNAME}" "http://${INGRESS_HOST}:${INGRESS_PORT}/v1/models/demo01:predict" -d "{\"instances\": [ ${IMAGE_DATA} ]}")
+
+INFERENCE_END=$(date +%s.%N)
+DIFF=$(echo "$INFERENCE_END - $INFERENCE_START" | bc)
+echo "Inference took ${DIFF} seconds."
 
 PREDICTIONS=$(echo ${INFERENCE_RESULT} | jq '.predictions[0]')
 

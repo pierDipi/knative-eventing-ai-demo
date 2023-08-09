@@ -56,9 +56,16 @@ curl -d '{"instances": [[[ [82,83,65],[83,86,69],[92,99,83] ]]]}' -X POST http:/
 IMAGE_PATH="./tensorflow_serving_test/test_smaller.jpeg"
 # IMAGE_DATA will hold the image data as a list of lists of lists
 IMAGE_DATA=$(python -c "from PIL import Image;import os;import numpy as np;print(np.array(Image.open(os.path.join(os.getcwd(), '${IMAGE_PATH}'))).tolist())")
+
+INFERENCE_START=$(date +%s.%N)
+
 # call the inference, which will return a JSON with the predictions
 # there can be too many results, so, let's not print them right now
 INFERENCE_RESULT=$(curl -d "{\"instances\": [ ${IMAGE_DATA} ]}" -X POST http://localhost:8501/v1/models/knative01:predict)
+
+INFERENCE_END=$(date +%s.%N)
+DIFF=$(echo "$INFERENCE_END - $INFERENCE_START" | bc)
+echo "Inference took ${DIFF} seconds."
 
 # INFERENCE_RESULT looks like this
 # ❯ echo ${INFERENCE_RESULT} | jq
