@@ -248,3 +248,30 @@ Troubleshooting:
 Follow: https://stackoverflow.com/a/72458201
 
 ---
+
+### Try on your machine
+
+When you clone this repo, stuff above will be there for you, except some files that can't be checked in to Git because they are big.
+
+If you want to start from scratch and do the training, start by downloading pre-trained model:
+```shell
+cd training/TensorFlow/workspace/training_01/pre-trained-models
+
+# download the model archive
+curl -L http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz -o model.tar.gz
+tar xvzf model.tar.gz
+
+cd ../../../../..
+```
+
+If you don't want to train on top of the model I've trained, download the model I trained:
+```shell
+
+gsutil cp -r gs://knative-ai-demo/models/my_ssd_resnet50_v1_fpn/ training/TensorFlow/workspace/training_01/models/
+
+```
+
+If you're not interested in any of the training, but you want to get the exported model:
+```shell
+gsutil cp -r gs://knative-ai-demo/exported-models/my_model training/TensorFlow/workspace/training_01/exported-models/
+```
