@@ -20,6 +20,8 @@ for gpu in gpus:
 SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 TEST_IMAGES = [
+    "../../tensorflow_serving_test/test_small.jpeg",
+    "../../tensorflow_serving_test/test_smaller.jpeg",
     "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.49.jpeg",
     "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.52.jpeg",
     "../../training/TensorFlow/workspace/training_01/images/test/photo_2023-08-08 13.26.53.jpeg",
