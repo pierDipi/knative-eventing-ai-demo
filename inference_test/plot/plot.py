@@ -42,6 +42,11 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 print('Done! Took {} seconds'.format(elapsed_time))
 
+print("\n\n\n\n")
+print("Model inputs and outputs: ")
+print(detect_fn.signatures['serving_default'].pretty_printed_signature())
+print("\n\n")
+
 # %%
 # Load label map data (for plotting)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,6 +93,8 @@ for image_path in TEST_IMAGES:
     image_path = os.path.join(SCRIPT_PATH, image_path)
     image_path = os.path.abspath(image_path)
 
+    print("\n\n\n\n")
+    print("==================================")
     print('Running inference for {}... '.format(image_path))
 
     image_np = load_image_into_numpy_array(image_path)
@@ -104,6 +111,8 @@ for image_path in TEST_IMAGES:
     num_detections = int(detections.pop('num_detections'))
     detections = {key: value[0, :num_detections].numpy() for key, value in detections.items()}
     detections['num_detections'] = num_detections
+
+    print("Number of detections: " + str(num_detections))
 
     # detection_classes should be ints.
     detections['detection_classes'] = detections['detection_classes'].astype(np.int64)
