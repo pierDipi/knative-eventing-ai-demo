@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Knative AI Demo</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <style>
+        html, body, #container, #homeView, #resultView, #evaluatingView {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #homeView .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            background: darkred;
+            color: white;
+            text-shadow: -4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000;
+            border: 2px solid black;
+        }
+
+        #homeView .subtitle {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            background: white;
+            color: darkred;
+            border: 2px solid black;
+        }
+
+        #homeView .background{
+            background: linear-gradient(0deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url("static/bg.png");
+            /*background: url("static/bg.png");*/
+            height: 100%;
+        }
+
+        #homeView .bottom{
+            position: absolute;
+            bottom:0;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+        }
+
+        #homeView .bottomTitle{
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+        }
+
+        .touchImg{
+            width: 4rem;
+            height: auto;
+        }
+
+        #image {
+            /*4.4rem is the height of the success/failure indicator*/
+            height: calc(100% - 4.4rem);
+            width: auto;
+            margin: 0;
+            margin-top: 4.4rem;
+        }
+
+        .buttons {
+            text-align: center;
+            height: 20%;
+        }
+
+        #canvas {
+            height: 100%;
+            width: 100%;
+        }
+
+        #imageSelectButton {
+            position: relative;
+            overflow: hidden;
+            padding: 2px;
+            font-size: 3rem;
+        }
+
+        #imageSelectInput {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+
+        #evaluatingView{
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: rgba(255,255,255,0.8);
+            padding-top: 75%;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+        }
+
+        #evaluatingView .spinner {
+            margin-left: calc(50% - 30px);
+            margin-bottom: 20%;
+
+            --d:150px;
+            width: 60px;
+            height: 60px;
+            border-radius: 100%;
+            color: darkred;
+            box-shadow:
+                    calc(1*var(--d))      calc(0*var(--d))     0 0,
+                    calc(0.707*var(--d))  calc(0.707*var(--d)) 0 2px,
+                    calc(0*var(--d))      calc(1*var(--d))     0 4px,
+                    calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 6px,
+                    calc(-1*var(--d))     calc(0*var(--d))     0 8px,
+                    calc(-0.707*var(--d)) calc(-0.707*var(--d))0 10px,
+                    calc(0*var(--d))      calc(-1*var(--d))    0 12px;
+            animation: s7 1s infinite steps(8);
+            scale: 0.3;
+        }
+
+        @keyframes s7 {
+            100% {transform: rotate(1turn)}
+        }
+
+        #success {
+            position: absolute;
+            top: 0;
+            text-align: center;
+            width: 100%;
+            background: rgb(0, 180, 0);
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+
+        #success .checkmark {
+            position: absolute;
+            top: 1.8rem;
+            padding-left: calc(50% - 2.5rem);
+            padding-top: 0.7rem;
+            color: rgb(0, 180, 0);
+        }
+
+        #success .checkmark svg {
+            width: 5rem;
+        }
+
+        #failure {
+            position: absolute;
+            top: 0;
+            text-align: center;
+            width: 100%;
+            background: darkred;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+
+        #failure .cross {
+            position: absolute;
+            top: 1.8rem;
+            padding-left: calc(50% - 2.5rem);
+            padding-top: 0.7rem;
+            color: darkred;
+        }
+
+        #failure .cross svg {
+            width: 5rem;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <div id="homeView">
+        <div></div>
+        <div class="title">
+            SEE KNATIVE
+        </div>
+        <div class="subtitle">
+            "The Shazam for Logos"
+        </div>
+        <div class="background">
+        </div>
+        <div class="bottom">
+            <div class="buttons">
+                <div class="imageSelectButton" class="btn btn-outline-light btn-lg">
+                    <img class="touchImg" src="static/touch_button.svg" />
+                    <input type="file" id="imageSelectInput" name="image" accept="image/*">
+                </div>
+            </div>
+            <div class="bottomTitle">
+                Touch to SEE KNATIVE
+            </div>
+        </div>
+    </div>
+    <div id="resultView" style="display: none;">
+        <div id="image">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <div id="evaluatingView" style="display: none;">
+        <div class="spinner"></div>
+        <div>
+            Evaluating...
+        </div>
+    </div>
+
+    <div id="success" style="display: none;">
+        <div class="checkmark">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
+                 class="bi bi-check-circle" viewBox="0 0 16 16">
+                <!-- use https://yqnn.github.io/svg-path-editor/-->
+                <path
+                        d="M 8 0 a 8 8 0 1 1 0 16 A 8 8 0 0 1 8 0 z m 5 5 a 1 1 0 0 0 0 -1 L 13 4 L 7.5 9.793 L 5.354 7.646 a 0.5 0.5 0 1 0 -0.708 0.708 l 2.5 2.5 a 0.5 0.5 0 0 0 0.708 0 l 5.146 -5.854 z"/>
+            </svg>
+        </div>
+        Knative
+    </div>
+
+    <div id="failure" style="display: none;">
+        <div class="cross">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
+                 class="bi bi-x-circle" viewBox="0 0 16 16">
+                <!-- use https://yqnn.github.io/svg-path-editor/-->
+                <path
+                        d="M 8 2 a 8 8 0 1 1 0 16 A 8 8 0 0 1 8 2 z L 5 6 L 4 7 l 3 3 l -3 3 L 5 14 L 8 11 L 11 14 L 12 13 L 9 10 L 12 7 L 11 6 L 8 9 L 5 6 z"/>
+            </svg>
+        </div>
+        Not Knative
+    </div>
+
+</div>
+
+<div id="errorModal" class="modal fade" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5 text-danger" id="errorModalLabel">Error</h1>
+            </div>
+            <div class="modal-body">
+                [ERROR MESSAGE HERE]
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // iife
+    (function () {
+        // these are passed in from the server
+        const MAX_IMAGE_WIDTH = parseInt("{{ max_img_width }}", 10);
+        const MAX_IMAGE_HEIGHT = parseInt("{{ max_img_height }}", 10);
+
+        const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+
+        function showErrorMessage(message) {
+            $("#errorModal .modal-body").text(message);
+            errorModal.show();
+        }
+
+        function debugImage(imageData) {
+            try {
+                let img = new Image();
+                img.onload = function () {
+                    console.log("Image dimensions:", img.width, "x", img.height, "ratio:", img.width / img.height, "size:", (imageData.length / 1024).toFixed(2), "Kb");
+                    const style = `font-size: 300px; background-image: url("${imageData}"); background-size: contain; background-repeat: no-repeat;`;
+                    console.log("%c     ", style);
+                };
+                img.src = imageData;
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function getImageData(image) {
+            let canvas = document.createElement('canvas');
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0);
+
+            return canvas.toDataURL();
+        }
+
+        function createScaledDownImage(image) {
+            // create a hidden canvas to scale down the image
+            let hRatio = MAX_IMAGE_WIDTH / image.naturalWidth;
+            let vRatio = MAX_IMAGE_HEIGHT / image.naturalHeight;
+
+            let ratio = Math.min(hRatio, vRatio);
+            if (ratio >= 1.0) {
+                // no need to scale down
+                return getImageData(image);
+            }
+
+            let scaledDownWidth = image.naturalWidth * ratio;
+            let scaledDownHeight = image.naturalHeight * ratio;
+
+            let canvas = document.createElement('canvas');
+            canvas.width = scaledDownWidth;
+            canvas.height = scaledDownHeight;
+
+            let ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, scaledDownWidth, scaledDownHeight);
+
+            return canvas.toDataURL();
+        }
+
+        $(document).ready(() => {
+            let currentImage = null;
+            let currentScaledDownImageData = null;
+            let currentImageRatio = 1.0;
+
+            function drawImage() {
+                const canvas = document.getElementById('canvas');
+                let $canvas = $("#canvas");
+
+                // Set canvas size to its visual size to avoid scaling
+                canvas.width = $canvas.width();
+                canvas.height = $canvas.height();
+
+                const ctx = canvas.getContext('2d');
+
+
+                // clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // TODO: need to do auto rotation based on image orientation
+                let hRatio = canvas.width / currentImage.naturalWidth;
+                let vRatio = canvas.height / currentImage.naturalHeight;
+
+                currentImageRatio = Math.min(hRatio, vRatio);
+                ctx.drawImage(currentImage, 0, 0, currentImage.width, currentImage.height, 0, 0, currentImage.width * currentImageRatio, currentImage.height * currentImageRatio);
+            }
+
+            function callUpload() {
+                $.ajax({
+                    url: "/upload",
+                    type: "POST",
+                    data: JSON.stringify({
+                        // something like /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYG
+                        "image_b64": currentScaledDownImageData.split(",")[1],
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        // TODO: we're now done with uploading, we will wait for the WS to send us the prediction result
+                        // TODO: hide loading overlay when we got the prediction result
+                        // $("#evaluatingView").hide();
+                        // $("#success").show();
+                        // $("#failure").show();
+                        console.log("Success:", data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $("#evaluatingView").hide();
+                        console.log("Error:", xhr.status, "-", xhr.responseText);
+                        showErrorMessage(xhr.responseText);
+                    }
+                });
+
+            }
+
+            $("#imageSelectInput").change(function () {
+                $("#evaluatingView").show();
+
+                const file = this.files[0];
+                if (file) {
+                    const img = new Image();
+                    img.onload = function () {
+                        currentImage = img;
+                        $("#homeView").hide();
+                        $("#resultView").show();
+                        drawImage();
+                        currentScaledDownImageData = createScaledDownImage(currentImage);
+                        debugImage(currentScaledDownImageData);
+                        callUpload();
+                    };
+                    img.src = URL.createObjectURL(file);
+                }
+            });
+        });
+    })();
+</script>
+</body>
+</html>
