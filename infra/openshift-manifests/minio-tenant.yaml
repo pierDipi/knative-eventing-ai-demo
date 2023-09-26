@@ -18,12 +18,8 @@ spec:
   certConfig: {}
   users:
     - name: storage-user
-  externalClientCertSecrets:
-    - name: minio-client-certs
   buckets:
     - name: ai-demo
-  externalClientCertSecret:
-    name: minio-client-certs
   env: []
   imagePullSecret: {}
   configuration:
