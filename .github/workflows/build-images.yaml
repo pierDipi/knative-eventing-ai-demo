@@ -28,3 +28,18 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - name: Print ai-demo-upload-service image url
         run: echo "ai-demo-upload-service image pushed to ${{ steps.push-ai-demo-upload-service.outputs.registry-paths }}"
+
+      - name: Build ai-demo-minio-webhook-source
+        id: build-ai-demo-minio-webhook-source
+        run: docker build services/minio-webhook-source --file services/minio-webhook-source/Dockerfile -t ai-demo-minio-webhook-source:main
+      - name: Push ai-demo-minio-webhook-source
+        id: push-ai-demo-minio-webhook-source
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ai-demo-minio-webhook-source
+          tags: main
+          registry: quay.io/kevent-mesh
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Print ai-demo-minio-webhook-source image url
+        run: echo "ai-demo-minio-webhook-source image pushed to ${{ steps.push-ai-demo-minio-webhook-source.outputs.registry-paths }}"
