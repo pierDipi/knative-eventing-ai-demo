@@ -10,5 +10,8 @@ resources:
   - minio-operator-namespace.yaml
   - minio-operator-operatorgroup.yaml
   - minio-operator-subscription.yaml
+  - minio-storage-configuration.yaml
   - minio-tenant.yaml
+  - ai-demo-namespace.yaml
+  - minio-webhook-source/service.yaml
 
