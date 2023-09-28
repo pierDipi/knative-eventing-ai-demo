@@ -20,4 +20,5 @@ resources:
   - upload-service/service.yaml
   - ui-service/configmap.yaml
   - ui-service/service.yaml
+  - analytics-service
 
